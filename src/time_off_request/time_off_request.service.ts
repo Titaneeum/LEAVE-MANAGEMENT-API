@@ -12,8 +12,14 @@ export class TimeOffRequestService {
     private readonly timeRepo: Repository<TimeOffRequest>,
   ) {}
 
-  async create(createTimeOffRequestDto: CreateTimeOffRequestDto, file: Express.Multer.File | null) {
-    const t = this.timeRepo.create({...createTimeOffRequestDto, supp_document: file ? file.buffer : null});
+  async create(
+    createTimeOffRequestDto: CreateTimeOffRequestDto,
+    file: Express.Multer.File | null,
+  ) {
+    const t = this.timeRepo.create({
+      ...createTimeOffRequestDto,
+      supp_document: file ? file.buffer : null,
+    });
     return this.timeRepo.save(t);
   }
 
@@ -26,7 +32,10 @@ export class TimeOffRequestService {
   }
 
   async getRawBlobByRequestId(id: number): Promise<Buffer | null> {
-    const r = await this.timeRepo.findOne({ where: { id }, select: ['supp_document'] });
+    const r = await this.timeRepo.findOne({
+      where: { id },
+      select: ['supp_document'],
+    });
     return r?.supp_document ?? null;
   }
 

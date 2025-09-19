@@ -1,31 +1,29 @@
-import { IsDate, IsString } from "class-validator";
-
+import { IsDate, IsString } from 'class-validator';
 
 export class CreateTimeOffRequestDto {
-    @IsString()
-    type: string;
+  @IsString()
+  type: string;
 
-    @IsString()
-    leave_type: string;
+  @IsString()
+  leave_type: string;
 
-    @IsString()
-    time_off_type: string;
-    
-    @IsDate()
-    time_start: Date;
+  @IsString()
+  time_off_type: string;
 
-    @IsDate()
-    time_end: Date;
-    
-    @IsDate()
-    day_start: Date;
+  @IsDate()
+  time_start: Date;
 
-    @IsDate()
-    day_end: Date;
+  @IsDate()
+  time_end: Date;
 
-    @IsString()
-    reason: string;
+  @IsDate()
+  day_start: Date;
 
-    supp_document: Buffer;
+  @IsDate()
+  day_end: Date;
 
+  @IsString()
+  reason: string;
+
+  supp_document: Buffer;
 }
