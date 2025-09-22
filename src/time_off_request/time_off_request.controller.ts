@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Controller,
   Get,
@@ -18,17 +20,23 @@ import { CreateTimeOffRequestDto } from './dto/create-time_off_request.dto';
 import { UpdateTimeOffRequestDto } from './dto/update-time_off_request.dto';
 import multer from 'multer';
 import type { Response } from 'express';
-const fileTypeFromBuffer = async (buf: Buffer) => (await import('file-type')).fileTypeFromBuffer(buf);
+const fileTypeFromBuffer = async (buf: Buffer) =>
+  (await import('file-type')).fileTypeFromBuffer(buf);
 
 @Controller('time-off-request')
 export class TimeOffRequestController {
   constructor(private readonly timeOffRequestService: TimeOffRequestService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file', {
-    storage: multer.memoryStorage(),
-  }))
-  create(@Body() createTimeOffRequestDto: CreateTimeOffRequestDto, @UploadedFile() file) {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: multer.memoryStorage(),
+    }),
+  )
+  create(
+    @Body() createTimeOffRequestDto: CreateTimeOffRequestDto,
+    @UploadedFile() file,
+  ) {
     console.log({
       gotFile: !!file,
       field: file?.fieldname,
@@ -52,11 +60,14 @@ export class TimeOffRequestController {
   }
 
   @Get(':id/document')
-  async getDocument(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
-    const rec = await this.timeOffRequestService.getRawBlobByRequestId(id); 
+  async getDocument(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ) {
+    const rec = await this.timeOffRequestService.getRawBlobByRequestId(id);
     if (!rec) throw new NotFoundException('No document');
 
-    const type = await fileTypeFromBuffer(rec); 
+    const type = await fileTypeFromBuffer(rec);
     const mime = type?.mime ?? 'application/octet-stream';
     const filename = `request-${id}.${type?.ext ?? 'bin'}`;
 

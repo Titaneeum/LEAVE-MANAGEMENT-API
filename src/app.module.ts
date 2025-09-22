@@ -12,9 +12,9 @@ import { TimeOffRequest } from './time_off_request/entities/time_off_request.ent
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '1234',
-      database: 'leave-management',
-      entities: [TimeOffRequest], 
+      password: '',
+      database: 'leave_management',
+      entities: [TimeOffRequest],
       synchronize: false, // true only for dev
     }),
     TimeOffRequestModule,

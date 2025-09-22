@@ -6,9 +6,10 @@ import { TimeOffRequest } from './entities/time_off_request.entity';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TimeOffRequest]),
-    MulterModule.register({ dest: './uploads', })
-],
+  imports: [
+    TypeOrmModule.forFeature([TimeOffRequest]),
+    MulterModule.register({ dest: './uploads' }),
+  ],
   controllers: [TimeOffRequestController],
   providers: [TimeOffRequestService],
 })
