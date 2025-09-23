@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTimeOffRequestDto } from './dto/create-time_off_request.dto';
 import { UpdateTimeOffRequestDto } from './dto/update-time_off_request.dto';
 import { TimeOffRequest } from './entities/time_off_request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 
 @Injectable()
 export class TimeOffRequestService {
@@ -20,15 +24,39 @@ export class TimeOffRequestService {
       ...createTimeOffRequestDto,
       supp_document: file ? file.buffer : null,
     });
-    return this.timeRepo.save(t);
+
+    try {
+      return await this.timeRepo.save(t);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException(error.message);
+      } else {
+        throw error;
+      }
+    }
   }
 
-  findAll() {
-    return this.timeRepo.find();
+  async findAll() {
+    const find = this.timeRepo.find();
+
+    try {
+      return await find;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException(error.message);
+      } else {
+        throw error;
+      }
+    }
   }
 
-  findOne(id: number) {
-    return this.timeRepo.findOneBy({ id });
+  async findOne(id: number) {
+    const findOne = this.timeRepo.findOneByOrFail({ id });
+    try {
+      return await findOne;
+    } catch (error) {
+      throw new NotFoundException('ID not found');
+    }
   }
 
   async getRawBlobByRequestId(id: number): Promise<Buffer | null> {
@@ -41,12 +69,14 @@ export class TimeOffRequestService {
 
   async update(id: number, updateTimeOffRequestDto: UpdateTimeOffRequestDto) {
     await this.timeRepo.update(id, updateTimeOffRequestDto);
-    return this.timeRepo.findOneBy({ id });
+    const updated = await this.timeRepo.findOneBy({ id });
+    if (!updated)
+      throw new BadRequestException('Could not update time off request');
+    return updated;
   }
 
   async remove(id: number) {
     const findId = await this.timeRepo.findOne({ where: { id } });
-    console.log(findId);
     if (!findId) {
       throw new BadRequestException('ID not found');
     }
@@ -54,9 +84,4 @@ export class TimeOffRequestService {
     await this.timeRepo.delete(id);
     return { deleted: true };
   }
-
-  //please implement your methods here
-
-  //test commit 2
-  //test commit 3
 }

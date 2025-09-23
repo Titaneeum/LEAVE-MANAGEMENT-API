@@ -12,10 +12,10 @@ export class TimeOffRequest {
   type: string;
 
   @Column()
-  leave_type: string;
+  leave_type: number;
 
   @Column()
-  time_off_type: string;
+  time_off_type: number;
 
   @Column({ type: 'timestamp', nullable: true })
   time_start: Date;

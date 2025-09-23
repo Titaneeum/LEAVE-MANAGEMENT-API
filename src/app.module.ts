@@ -4,6 +4,12 @@ import { AppService } from './app.service';
 import { TimeOffRequestModule } from './time_off_request/time_off_request.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TimeOffRequest } from './time_off_request/entities/time_off_request.entity';
+import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { TimeoffTypeModule } from './timeoff_type/timeoff_type.module';
+import { LeaveTypeModule } from './leave_type/leave_type.module';
+import { LeaveType } from './leave_type/entities/leave_type.entity';
 
 @Module({
   imports: [
@@ -12,12 +18,16 @@ import { TimeOffRequest } from './time_off_request/entities/time_off_request.ent
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
-      database: 'leave_management',
-      entities: [TimeOffRequest],
+      password: '1234',
+      database: 'leave-management',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false, // true only for dev
     }),
     TimeOffRequestModule,
+    UserModule,
+    AuthModule,
+    LeaveTypeModule,
+    TimeoffTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

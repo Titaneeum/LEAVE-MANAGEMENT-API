@@ -33,7 +33,7 @@ export class TimeOffRequestController {
       storage: multer.memoryStorage(),
     }),
   )
-  create(
+  async create(
     @Body() createTimeOffRequestDto: CreateTimeOffRequestDto,
     @UploadedFile() file,
   ) {
@@ -45,7 +45,6 @@ export class TimeOffRequestController {
       size: file?.size,
       hasBuffer: !!file?.buffer,
     });
-
     return this.timeOffRequestService.create(createTimeOffRequestDto, file);
   }
 
