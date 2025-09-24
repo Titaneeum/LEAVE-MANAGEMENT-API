@@ -17,10 +17,10 @@ export class CreateTimeOffRequestDto {
   time_end: string;
 
   @IsDateString()
-  day_start: string;
+  date_start: string;
 
   @IsDateString()
-  day_end: string;
+  date_end: string;
 
   @IsString()
   reason: string;

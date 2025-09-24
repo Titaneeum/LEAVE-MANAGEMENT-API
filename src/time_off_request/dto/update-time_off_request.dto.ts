@@ -12,8 +12,5 @@ export class UpdateTimeOffRequestDto extends PartialType(
   rejected_reason: string;
 
   @IsNumber()
-  updated_at: number;
-
-  @IsNumber()
   updated_by: number;
 }

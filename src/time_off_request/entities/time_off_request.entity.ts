@@ -24,10 +24,10 @@ export class TimeOffRequest {
   time_end: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  day_start: Date;
+  date_start: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  day_end: Date;
+  date_end: Date;
 
   @Column({ default: 'pending' })
   status: string;
@@ -37,9 +37,6 @@ export class TimeOffRequest {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
-
-  @Column()
-  created_by: number;
 
   @Column({ nullable: true })
   reason: string;
