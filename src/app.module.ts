@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TimeOffRequestModule } from './time_off_request/time_off_request.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { TimeoffTypeModule } from './timeoff_type/timeoff_type.module';
-import { LeaveTypeModule } from './leave_type/leave_type.module';
-import { RequestDraftModule } from './request_draft/request_draft.module';
+import { LeaveRequestModule } from './leave_request/leave_request.module';
+import { LeaveBalanceModule } from './leave_balance/leave_balance.module';
+import { UserLevelModule } from './user_level/user_level.module';
+import { TimeOffRequestModule } from './time-off_request/time-off_request.module';
 
 @Module({
   imports: [
@@ -17,16 +17,16 @@ import { RequestDraftModule } from './request_draft/request_draft.module';
       port: 3306,
       username: 'root',
       password: '1234',
-      database: 'leave-management',
+      database: 'leave_management',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false, // true only for dev
     }),
-    TimeOffRequestModule,
     UserModule,
     AuthModule,
-    LeaveTypeModule,
-    TimeoffTypeModule,
-    RequestDraftModule,
+    TimeOffRequestModule,
+    LeaveRequestModule,
+    LeaveBalanceModule,
+    UserLevelModule,
   ],
   controllers: [AppController],
   providers: [AppService],

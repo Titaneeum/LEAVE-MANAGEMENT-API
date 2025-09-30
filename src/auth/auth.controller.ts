@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -28,5 +31,30 @@ export class AuthController {
   @Get('me')
   getUserInfo(@Request() request) {
     return request.user;
+  }
+
+  @Patch('update')
+  updateUser(
+    @Body()
+    body: {
+      user_id: number;
+      user_name?: string;
+      user_email?: string;
+      user_department?: string;
+      user_password?: string;
+      userlevel_id?: number;
+    },
+  ) {
+    return this.authService.updateUser(body.user_id, body);
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') id: number) {
+    return this.authService.deleteUser(id);
+  }
+
+  @Get(':id')
+  findUserById(@Param('id') id: number) {
+    return this.authService.findUserById(id);
   }
 }

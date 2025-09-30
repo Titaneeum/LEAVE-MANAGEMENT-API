@@ -1,14 +1,27 @@
-import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterDto {
+  @IsNotEmpty()
+  user_name: string;
+
   @IsEmail()
-  email!: string;
+  user_email: string;
 
   @IsNotEmpty()
-  @MinLength(2)
-  name!: string;
+  user_department: string;
 
-  @IsNotEmpty()
   @MinLength(6)
-  password!: string;
+  user_password: string;
+
+  @IsOptional()
+  @IsEnum([1, 2, 3])
+  userlevel_id: number = 3; // Default to 'user' level
+
+  user_profilePic: Buffer;
 }

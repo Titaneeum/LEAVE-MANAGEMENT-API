@@ -19,9 +19,39 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(body: { email: string; name: string; password: string }) {
+  async register(body: {
+    user_name: string;
+    user_email: string;
+    user_department: string;
+    user_password: string;
+    userlevel_id: number;
+    user_profilePic: Buffer;
+  }) {
     const user = await this.usersService.createUser(body);
     return { id: user.id, email: user.email, name: user.name };
+  }
+
+  async updateUser(
+    id: number,
+    body: {
+      user_name?: string;
+      user_email?: string;
+      user_department?: string;
+      user_password?: string;
+      userlevel_id?: number;
+      user_profilePic?: Buffer;
+    },
+  ) {
+    const user = await this.usersService.updateUser(id, body);
+    return 'user updated';
+  }
+
+  async deleteUser(id: number) {
+    return this.usersService.deleteUser(id);
+  }
+
+  async findUserById(id: number) {
+    return this.usersService.findUserById(id);
   }
 
   async authenticate(input: AuthInput): Promise<AuthResult> {
@@ -31,6 +61,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+
     return this.signIn(user);
   }
 
@@ -38,17 +69,19 @@ export class AuthService {
     const user = await this.usersService.findUserByEmail(input.email);
 
     const password = input.password;
-    const storedHash = user && user.password;
+    const storedHash = user.user_password;
     const isMatch = await bcrypt.compare(password, storedHash);
 
     if (user && isMatch) {
+      await this.usersService.updateLastLogin(user.user_id, {
+        last_login: new Date(),
+      });
       return {
-        userId: user.id,
-        email: user.email,
-        name: user.name,
+        userId: user.user_id,
+        email: user.user_email,
+        name: user.user_name,
       };
     }
-
     return null;
   }
 
