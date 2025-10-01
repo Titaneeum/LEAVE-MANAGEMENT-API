@@ -44,8 +44,7 @@ export class LeaveBalanceService {
   async findBalanceByUserId(id: number) {
     try {
       const findID = await this.repo.findOne({ where: { user_id: id } });
-      if (!findID) 
-        throw new NotFoundException('Leave balance not found');
+      if (!findID) throw new NotFoundException('Leave balance not found');
       return findID;
     } catch (error) {
       throw new BadRequestException(error.message);

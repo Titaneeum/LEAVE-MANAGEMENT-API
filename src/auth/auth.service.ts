@@ -27,8 +27,8 @@ export class AuthService {
     userlevel_id: number;
     user_profilePic: Buffer;
   }) {
-    const user = await this.usersService.createUser(body);
-    return { id: user.id, email: user.email, name: user.name };
+    const user = await this.usersService.createUserwithBalance(body);
+    return { message: 'User created successfully' };
   }
 
   async updateUser(
@@ -43,7 +43,7 @@ export class AuthService {
     },
   ) {
     const user = await this.usersService.updateUser(id, body);
-    return 'user updated';
+    return { message: 'User updated successfully' };
   }
 
   async deleteUser(id: number) {
@@ -60,8 +60,6 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-
-
     return this.signIn(user);
   }
 

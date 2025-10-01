@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -11,10 +12,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserInfoDto } from './dto/update-userInfo.dto';
 import { UpdateUserLoginDto } from './dto/update-userLogin.dto';
 import { UpdateUserLastUpdateDto } from './dto/update-userLastUpdate.dto';
+import { LeaveBalanceService } from 'src/leave_balance/leave_balance.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private readonly leaveBalanceService: LeaveBalanceService,
+  ) {}
 
   async findUserByEmail(email: string) {
     const user = await this.repo.findOne({ where: { user_email: email } });
@@ -44,15 +49,42 @@ export class UserService {
     const salt = await bcrypt.genSalt(12);
     const hash = await bcrypt.hash(createUserDto.user_password, salt);
 
-    const user = this.repo.create({
+    const user = await this.repo.create({
       ...createUserDto,
       user_password: hash,
     });
 
-    const saved = this.repo.save(user);
+    const saved = await this.repo.save(user);
 
-    const { password, ...safe } = saved as any;    
+    const { user_password, ...safe } = saved as any;
     return safe;
+  }
+
+  async createUserwithBalance(createUserDto: CreateUserDto) {
+    try {
+      const user = await this.createUser(createUserDto);
+      const userId = user.user_id;
+      if (!user) throw new BadRequestException('Cannot create user');
+
+      const leaveBalance = await this.leaveBalanceService.create({
+        user_id: userId,
+        annual_leave: 30,
+        emergency_leave: 30,
+        unpaid_leave: 30,
+        hospitalization_leave: 30,
+        sick_leave: 30,
+      });
+      if (!leaveBalance) {
+        await this.deleteUser(userId);
+        throw new BadRequestException(
+          'Cannot create leave balance. Please try to register again.',
+        );
+      }
+
+      return { message: 'User created successfully' };
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
   }
 
   async updateUser(id: number, UpdateUserInfoDto: UpdateUserInfoDto) {

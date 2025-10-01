@@ -20,32 +20,51 @@ export class LeaveRequestService {
   async create(createLeaveRequestDto: CreateLeaveRequestDto) {
     try {
       const leaveRequest = this.repo.create(createLeaveRequestDto);
-      if(!leaveRequest) 
+      if (!leaveRequest)
         throw new BadRequestException('Cannot create leave request');
 
-      const updated = await this.leaveBalanceService.findBalanceByUserId(createLeaveRequestDto.created_by);
+      const updated = await this.leaveBalanceService.findBalanceByUserId(
+        createLeaveRequestDto.created_by,
+      );
       const policy = leaveRequest.leave_policy;
-      if(policy === 'annual_leave'){ 
-        if(leaveRequest.isHalf_Day === 1){
+      if (policy === 'annual_leave') {
+        if (leaveRequest.isHalf_Day === 1) {
           updated.annual_leave -= 0.5;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {annual_leave: updated.annual_leave});
-        }
-        else{
+          await this.leaveBalanceService.update(
+            createLeaveRequestDto.created_by,
+            { annual_leave: updated.annual_leave },
+          );
+        } else {
           updated.annual_leave -= 1;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {annual_leave: updated.annual_leave});
+          await this.leaveBalanceService.update(
+            createLeaveRequestDto.created_by,
+            { annual_leave: updated.annual_leave },
+          );
         }
-      } else if(policy === 'emergency_leave'){
-          updated.emergency_leave -= 1;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {emergency_leave: updated.emergency_leave});
-      } else if(policy === 'unpaid_leave'){
-          updated.unpaid_leave -= 1;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {unpaid_leave: updated.unpaid_leave});
-      } else if(policy === 'hospitalization_leave'){
-          updated.hospitalization_leave -= 1;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {hospitalization_leave: updated.hospitalization_leave});
-      } else if(policy === 'sick_leave'){
-          updated.sick_leave -= 1;
-          await this.leaveBalanceService.update(createLeaveRequestDto.created_by, {sick_leave: updated.sick_leave});
+      } else if (policy === 'emergency_leave') {
+        updated.emergency_leave -= 1;
+        await this.leaveBalanceService.update(
+          createLeaveRequestDto.created_by,
+          { emergency_leave: updated.emergency_leave },
+        );
+      } else if (policy === 'unpaid_leave') {
+        updated.unpaid_leave -= 1;
+        await this.leaveBalanceService.update(
+          createLeaveRequestDto.created_by,
+          { unpaid_leave: updated.unpaid_leave },
+        );
+      } else if (policy === 'hospitalization_leave') {
+        updated.hospitalization_leave -= 1;
+        await this.leaveBalanceService.update(
+          createLeaveRequestDto.created_by,
+          { hospitalization_leave: updated.hospitalization_leave },
+        );
+      } else if (policy === 'sick_leave') {
+        updated.sick_leave -= 1;
+        await this.leaveBalanceService.update(
+          createLeaveRequestDto.created_by,
+          { sick_leave: updated.sick_leave },
+        );
       }
       return await this.repo.save(leaveRequest);
     } catch (error) {
@@ -77,35 +96,48 @@ export class LeaveRequestService {
       const status = updateLeaveRequestDto.status;
       const policy = findID.leave_policy;
       const isHalfDay = findID.isHalf_Day;
-      
-      if(status === 'rejected'){
-        const updated = await this.leaveBalanceService.findBalanceByUserId(findID.created_by);
-        if(policy === 'annual_leave'){ 
-          if(isHalfDay === 1){
+
+      if (status === 'rejected') {
+        const updated = await this.leaveBalanceService.findBalanceByUserId(
+          findID.created_by,
+        );
+        if (policy === 'annual_leave') {
+          if (isHalfDay === 1) {
             updated.annual_leave = Number(updated.annual_leave) + 0.5;
-            await this.leaveBalanceService.update(findID.created_by, {annual_leave: updated.annual_leave});
-          }
-          else{
+            await this.leaveBalanceService.update(findID.created_by, {
+              annual_leave: updated.annual_leave,
+            });
+          } else {
             updated.annual_leave = Number(updated.annual_leave) + 1;
-            await this.leaveBalanceService.update(findID.created_by, {annual_leave: updated.annual_leave});
+            await this.leaveBalanceService.update(findID.created_by, {
+              annual_leave: updated.annual_leave,
+            });
           }
-        } else if(policy === 'emergency_leave'){
-            updated.emergency_leave = Number(updated.emergency_leave) + 1;
-            await this.leaveBalanceService.update(findID.created_by, {emergency_leave: updated.emergency_leave});
-        } else if(policy === 'unpaid_leave'){
-            updated.unpaid_leave = Number(updated.unpaid_leave) + 1;
-            await this.leaveBalanceService.update(findID.created_by, {unpaid_leave: updated.unpaid_leave});
-        } else if(policy === 'hospitalization_leave'){
-            updated.hospitalization_leave = Number(updated.hospitalization_leave) + 1;
-            await this.leaveBalanceService.update(findID.created_by, {hospitalization_leave: updated.hospitalization_leave});
-        } else if(policy === 'sick_leave'){
-            updated.sick_leave = Number(updated.sick_leave) + 1;
-            await this.leaveBalanceService.update(findID.created_by, {sick_leave: updated.sick_leave});
+        } else if (policy === 'emergency_leave') {
+          updated.emergency_leave = Number(updated.emergency_leave) + 1;
+          await this.leaveBalanceService.update(findID.created_by, {
+            emergency_leave: updated.emergency_leave,
+          });
+        } else if (policy === 'unpaid_leave') {
+          updated.unpaid_leave = Number(updated.unpaid_leave) + 1;
+          await this.leaveBalanceService.update(findID.created_by, {
+            unpaid_leave: updated.unpaid_leave,
+          });
+        } else if (policy === 'hospitalization_leave') {
+          updated.hospitalization_leave =
+            Number(updated.hospitalization_leave) + 1;
+          await this.leaveBalanceService.update(findID.created_by, {
+            hospitalization_leave: updated.hospitalization_leave,
+          });
+        } else if (policy === 'sick_leave') {
+          updated.sick_leave = Number(updated.sick_leave) + 1;
+          await this.leaveBalanceService.update(findID.created_by, {
+            sick_leave: updated.sick_leave,
+          });
         }
       }
       const update = await this.repo.update(id, updateLeaveRequestDto);
-      if (!update)
-        throw new NotFoundException('Cannot update leave request.');
+      if (!update) throw new NotFoundException('Cannot update leave request.');
       return { message: 'Leave request updated successfully' };
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -120,7 +152,7 @@ export class LeaveRequestService {
           'Cannot delete leave request. Leave request not found',
         );
       const deleteLeave = await this.repo.delete(id);
-      if(!deleteLeave) 
+      if (!deleteLeave)
         throw new BadRequestException('Cannot delete leave request.');
       return { message: 'Leave request deleted successfully' };
     } catch (error) {

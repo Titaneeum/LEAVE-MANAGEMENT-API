@@ -20,8 +20,8 @@ export class RegisterDto {
   user_password: string;
 
   @IsOptional()
-  @IsEnum([1, 2, 3])
-  userlevel_id: number = 3; // Default to 'user' level
+  @IsEnum([1, 2, 3, 4])
+  userlevel_id: number = 4; // Default to 'user' level
 
   user_profilePic: Buffer;
 }
